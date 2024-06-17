@@ -4,6 +4,9 @@ Creates a Sunburst Plot on top of an index of your choice.
 Go to URL: http://localhost:8050/?folder_id={index_id}
 """
 
+### TODO: SET YOU API KEY HERE!!
+api_key = "XXXXXXXXXXXXX"
+
 import requests
 from urllib.parse import urlencode, urlparse, unquote
 from datetime import date, timedelta
@@ -17,7 +20,6 @@ import dash_mantine_components as dmc
 from diskcache import Cache
 
 
-api_key = "wowsa"
 BASE = "https://sturdystatistics.com/api/text/v1/index"
 cache = Cache("cachingHelpsSpeed")
 DATE_FIELD = "published"
