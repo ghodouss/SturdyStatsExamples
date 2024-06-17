@@ -13,7 +13,7 @@ To install the required packages:
 
 ## Scripts
 
-### sunburst.py
+### 1. sunburst.py
 
 Requires: a trained index (supervised or unsupervised).
 This script constructs an interactive sunburst. The sunburst presents high level themes (topic_groups and topics). The sunburst is interactive. Clicking on a topic or topic group will return  
