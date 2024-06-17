@@ -1,0 +1,894 @@
+/* dependable.css */
+
+
+/* uncomment for debugging */
+/* * { outline: 1px solid red; } */
+
+
+
+/* set the typeface here. */
+/* no other styling applied */
+body {
+    font-family: "Charter", sans-serif;
+    font-size: 14px;
+    /* line-height: normal; */
+    line-height: 1.27;
+}
+
+
+
+/* small simple footer for copyright notice */
+.nu-footer {
+    background-color: #f1f1f1;
+    text-align: left;
+    padding: 0px;
+    margin: 0px;
+
+    height: 1rem;               /* fix height at 1rem */
+    overflow-y: hidden;
+}
+
+.nu-footer p {
+    padding: 0px;
+    margin: 0px;
+    font-size: 70%;
+    margin-left: 1em;
+}
+
+
+
+/* navigation bar */
+.nu-topnav {
+    display: flex;
+    align-items: stretch;        /* cross-axis (vertical) alignment */
+    overflow: hidden;
+
+    background-color: #36454F;
+
+    height: 2.5rem;                /* fix height at 3rem */
+    overflow-y: hidden;
+}
+
+.nu-topnav a {
+    display: flex;
+    align-items: center;
+
+    text-align: center;
+    padding-left: 1.25em;
+    padding-right: 1.25em;
+
+    text-decoration: none;      /* no underline for links*/
+
+    color: #f2f2f2;
+}
+
+.nu-topnav a:hover {
+    background-color: #94acbf;
+    color: #000;
+}
+
+/* special class for the tree logo */
+.nu-topnav .nu-logo {
+    height: 2rem;
+    margin-left: 0.5rem;
+    margin-right:0.5rem;
+}
+
+.nu-topnav .nu-logo a {
+    height: 2.5rem;             /* match topnav */
+    overflow-y: hidden;
+    padding: 0px;
+}
+
+.nu-topnav .nu-logo a:hover {
+    background-color: #36454F;  /* TODO: change color! */
+}
+
+
+.nu-search-bar {
+    width: 90%;
+    margin-bottom: auto;
+    margin-top: 1rem;
+}
+
+.dd-search-bar {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-left: 1rem;
+    margin-right: 0rem;
+    margin-bottom: auto;
+    margin-top: 1rem;
+}
+
+.dd-search-bar-input {
+    width: calc(100% - 40px - 0.5em - 1.5em);
+}
+
+.dd-clear-search-button-div {
+    /* width: 2.5em;               /\* not rem *\/ */
+    margin-left: 0.5em;
+}
+
+.dd-clear-search-button {
+    width: 40px;
+    height: 37px;
+    margin: 0px;
+    padding: 0px;
+    --bs-btn-bg: #36454F;
+}
+
+.dd-article-seg-controller {
+    margin-left: 1rem;
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+}
+
+div.citation-network-deep-dive {
+    color: #fcfcfc;
+    margin-top: 0.75em;
+    display: inline-block;
+    padding: 0rem;
+}
+
+.citation-network-deep-dive a {
+    text-decoration: none;
+    background-color: #326750;
+    color: #fcfcfc;
+
+    border-radius: 0.5em;
+    font-weight: bold;
+
+    padding: 0.5em;
+    padding-left:0.75em;
+    padding-right:0.75em;
+}
+
+.citation-network-deep-dive a:hover {
+    background-color: #36454F;
+}
+
+/* treemap plot */
+.treemap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+
+    height: calc(80vh - 3.5rem);
+    width: 80%;
+    margin: 0
+
+    background-color: #faa;
+}
+
+
+/* sunburst plot */
+.sunburst {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+
+    /* keep these for the real plot */
+    /* NB: 3.5rem = 2.5 for nav and 1 for footer */
+    /* NB: 38px for search bar */
+    width:min(100%, calc(100vh - 3.5rem - 38px));
+    aspect-ratio:1;
+    /* if aspect-ratio is not well-supported, work out height
+       exactly... needs a separate one for vertical layout... */
+}
+
+.nu-full-img {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+#live-sunburst {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+#ds-live-sunburst {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+#qs-live-sunburst {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+#live-sunburst-dd {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+#live-treemap {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.deepdive-button {
+    position:absolute;
+    bottom:0;
+    right:0;
+
+    margin:0em;
+    margin-bottom:0.33em;
+    padding:0;
+}
+
+.deepdive-button a {
+    text-decoration:none;
+    background-color: #326750;
+    padding:0.33em;
+    padding-left:0.5em;
+    padding-right:0.5em;
+    border-radius:0.5em;
+    color:white;
+    font-weight:bold;
+    border: 1pt solid black;
+}
+
+.deepdive-button a:hover {
+    background-color: #36454F;
+}
+
+.engine-seg-controller {
+    margin: 0.5em;
+    flex-basis: auto;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.engine-dropdown {
+    width: 12em;
+    margin: 0.5em;
+    flex-basis: auto;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.suggested-dives-seg-div{
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    flex: initial;
+    flex-shrink: 0;
+}
+
+div.suggested-dd-list{
+
+}
+
+.live-search-bar {
+    margin: 0.5em;
+    flex: 0;
+    width: 80%;
+}
+
+
+
+/* abstract card */
+.nu-topic-abstract {
+    background-color: #fcfcfc;
+    padding: 0.5em;
+    margin-top: 20px;
+    /* border-style: solid; */ /* for debugging */
+}
+
+.nu-topic-abstract h4, p {
+    padding: 0em;
+    margin: 0em;
+    margin-bottom: 1ex;
+}
+
+
+
+.nu-suggested-dive-card {
+    background-color: #fcfcfc;
+    padding: 0.5em;
+    margin-top: 20px;
+}
+
+#lastitem.nu-suggested-dive-card {
+    margin-bottom: 20px;        /* bottom margin on last card */
+}
+
+/* card header: arrow, URL, and info */
+.suggested-dive-header {
+    display: flex;
+    flex-direction: row;
+}
+
+.suggested-dive-header a {
+    text-decoration: none;
+    color: #326750;
+    font-weight: bold;
+}
+
+
+
+/* article snippet card */
+.nu-article-card {
+    background-color: #fcfcfc;
+    padding: 0.5em;
+    margin-top: 20px;
+    /* border-style: solid; */ /* for debugging */
+}
+
+#lastitem.nu-article-card {
+    margin-bottom: 20px;        /* bottom margin on last card */
+}
+
+/* card header: arrow, URL, and info */
+.cardheader {
+    display: flex;
+    flex-direction: row;
+}
+
+.cardheader a {
+    text-decoration: none;
+    color: #326750;
+    font-weight: bold;
+}
+
+.cardheader .nu-author-link {
+    margin-right: 1em;
+    font-weight: normal;
+}
+
+.cardheader a.nu-author-link:hover {
+    color: #36454F;
+    font-weight: bold;
+}
+
+.cardheader span {
+    padding: 0em;
+    /* display: inline-block; */
+}
+
+.cardheader .cardinfo, .cardheader .cardanchor {
+    flex: 0 0 auto;
+}
+
+.cardheader .cardanchor {
+    margin-right: 0.5em;
+    margin-left: auto;
+}
+
+.cardheader .cardinfo {
+    margin-left: 0.5em;
+    max-width: 12em;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-style: italic;
+    color: #326750;
+}
+
+.cardheader .cardlink {
+    flex: 1;
+    min-width: 0;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cardheader .cardlink a:hover {
+    color: #36454F;
+    font-weight: bold;
+    font-style: italic;
+}
+
+/* text content for card */
+.cardcontent {
+    padding: 0em;
+    margin: 0em;
+    margin-top:0.5em;
+}
+
+.cardcontent p {
+    padding: 0em;
+    margin: 0em;
+}
+
+
+
+/* row / column layout */
+
+/* NB. this specifies a single-column layout, with the article
+ * snippets stacked below the sunburst.  We overwrite this with a
+ * two-column layout inside the media query at the end */
+
+.nu-Page {
+    display: flex;
+    min-height: 100vh;
+    max-width: 100vw;
+    flex-direction: column;
+    margin: 0px;
+}
+
+.nu-content {
+    display: flex;
+    flex: 1;
+    background-color: #3f3;
+    overflow-y: hidden;
+}
+
+.nu-progress-bar {
+    padding: 1rem;
+
+}
+.nu-column-progress-bars {
+    flex: 1;
+    flex-direction: column;
+    order: -1;
+
+    background-color: #fcfcfc;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 2rem;
+
+    height: calc(100vh - 2.5rem);
+}
+.mantine-Progress-root{
+    width: 90%;
+    margin-bottom: 2.5rem;
+}
+
+p.nu-progress-bar-title{
+    width: 90%;
+    margin-bottom: 1rem;
+    font-style: italic;
+    font-size: 120%;
+}
+
+H5.nu-prog-bar-header {
+    font-size: 100%;
+}
+
+.nu-text-link {
+    color: #36454F;
+    margin-right: 1em;
+    font-weight: normal;
+}
+
+.nu-text-link:hover {
+    color: #36454F;
+    font-weight: bold;
+}
+
+@media (max-width: 600px){
+    .nu-column-progress-bars {
+        min-height: 0;
+    }
+    p.nu-progress-bar-title{
+        font-size: 100%;
+    }
+    .mantine-Progress-root{
+        margin-bottom: 1.5rem;
+    }
+}
+
+.nu-column-sunburst {
+    flex: 1;
+    flex-direction: column;
+    order: -1;
+    display: flex;
+    background-color: #fcfcfc;
+    align-items: center;
+    justify-content: center;
+    overflow-y: hidden;
+
+    min-height: calc(100vh - 2.5rem);
+}
+
+.nu-column-articles {
+    flex: 1;
+    background-color: #fcfcfc;
+    order: 0;
+    padding: 0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.nu-column-live-search {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+
+    align-items: center;
+    justify-content: start;
+    margin-bottom: 3em;
+}
+
+.suggested-dives-dropdown {
+}
+
+.nu-suggested-dives {
+    display: flex;
+    flex-direction: column;
+    flex: 5;
+
+    align-items: left;
+    justify-content: start;
+    padding-left: 4em;
+    padding-right: 4em;
+    padding-bottom: 4em;
+    overflow: scroll;
+
+}
+
+.nu-live-search-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex: 1;
+
+    height: calc(100vh - 3.5rem);
+    background-color: #fcfcfc;
+    overflow: scroll;
+
+}
+
+.nu-column-upload {
+    display: flex;
+    flex-direction: column;
+
+    background-color: #fcfcfc;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: scroll;
+
+    height: calc(100vh - 3.5rem);
+}
+
+.nu-column-homepage {
+    display: flex;
+    flex-direction: column;
+
+    background-color: #fcfcfc;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    height: calc(100vh - 3.5rem);
+    width: 100vw;
+}
+
+.nu-Page,
+.nu-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.cardheaderStacked {
+    flex-direction: column;
+    margin-bottom: 0.5em;
+}
+.cardheaderStacked .cardinfoStacked {
+    margin-left: 0.5em;
+    max-width: 100%;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.nu-column-authorlist {
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* align-items: flex-start; */
+    /* justify-content: center; */
+
+    background-color: #fcfcfc;
+
+    height: calc(100vh - 3.5rem);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.nu-column-about-page {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: justify;
+    hyphens: auto;
+
+    background-color: #fcfcfc;
+    overflow-y: scroll;
+
+    min-height: calc(100vh - 3.5rem);
+    width: 100vw;
+}
+
+div.about_page {
+    padding-bottom: 5em;
+    padding-top: 3em;
+    font-size: 20px;
+
+    width: 80%;
+    max-width: 40em;
+    flex: 1;
+}
+
+div.about_page a {
+    text-decoration: none;
+    color: #326750;
+    font-weight: bold;
+}
+
+h3.about_page {
+    margin-top: 2em;
+    font-weight: bold;
+}
+
+div.about_page dt {
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 1em;
+    margin-left: 1em;
+}
+
+div.about_page dd {
+    margin-left: 2em;
+}
+
+div.about_page p.about_page_tagline {
+    font-size: 140%;
+
+    font-weight: bold;
+    font-style: italic;
+
+    text-align: center;
+
+    padding-left:1.5em;
+    padding-right: 1.5em;
+}
+
+div.about_page p.about_page_intro {
+    font-size: 120%;
+    padding-left:1.5em;
+    padding-right: 1.5em;
+}
+
+div.about_page_video {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+div.about_page_video_container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+}
+
+iframe.about_page_youtube_link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+span.lr_logo {
+    /* font-variant: small-caps; */
+    font-weight: bold;
+    color: #326750;
+}
+
+.dd-sunburst-tooltip {
+    position: absolute;
+    bottom: 0.5;
+    left: 0.5;
+}
+
+/* If the screen is wide enough, switch to a column view with the*/
+/* sunburst and the articles shown side by side */
+@media (min-width: 1025px) {
+    body {
+        overflow-y:hidden;
+        overflow-x:hidden;
+    }
+
+    .nu-content {
+        flex-direction: row;
+        flex: 1;
+    }
+    .nu-column-sunburst {
+        flex: 1;
+        min-height: calc(100vh - 3.5rem);
+    }
+    .nu-column-articles {
+        flex: 1;
+        /* NB: 3.5rem = 2.5 for nav and 1 for footer */
+        height: calc(100vh - 3.5rem);
+        overflow-y: scroll;
+    }
+    .nu-column-live-search {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nu-live-search-page {
+        /* NB: 3.5rem = 2.5 for nav and 1 for footer */
+        height: calc(100vh - 3.5rem);
+
+    }
+    .nu-column-progress-bars {
+        flex: 1;
+        /* NB: 3.5rem = 2.5 for nav and 1 for footer */
+        height: calc(100vh - 3.5rem);
+    }
+
+    .nu-column-about-page {
+        flex: 1;
+        /* NB: 3.5rem = 2.5 for nav and 1 for footer */
+        height: calc(100vh - 3.5rem);
+        overflow-y: scroll;
+    }
+
+    .engine-dropdown {
+        flex-basis: 10em;
+    }
+    .live-search-bar {
+        flex: 1;
+        width: auto;
+    }
+}
+
+@media (max-width: 600px){
+    .cardheader {
+        flex-direction: column;
+        margin-bottom: 0.5em;
+    }
+    .cardheader .cardinfo {
+        margin-left: 0.5em;
+        max-width: 100%;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+
+
+
+
+
+/* google sign-in button */
+
+.gsi-material-button {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -webkit-appearance: none;
+  background-color: #f2f2f2;
+  background-image: none;
+  border: none;
+  -webkit-border-radius: 20px;
+  border-radius: 20px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  color: #1f1f1f;
+  cursor: pointer;
+  font-family: 'Roboto', arial, sans-serif;
+  font-size: 14px;
+  height: 40px;
+  letter-spacing: 0.25px;
+  outline: none;
+  overflow: hidden;
+  padding: 0 12px;
+  position: relative;
+  text-align: center;
+  -webkit-transition: background-color .218s, border-color .218s, box-shadow .218s;
+  transition: background-color .218s, border-color .218s, box-shadow .218s;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: auto;
+  max-width: 400px;
+  min-width: min-content;
+}
+
+.gsi-material-button .gsi-material-button-icon {
+  height: 20px;
+  margin-right: 12px;
+  min-width: 20px;
+  width: 20px;
+}
+
+.gsi-material-button .gsi-material-button-content-wrapper {
+  -webkit-align-items: center;
+  align-items: center;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  height: 100%;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+}
+
+.gsi-material-button .gsi-material-button-contents {
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  font-family: 'Roboto', arial, sans-serif;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+}
+
+.gsi-material-button .gsi-material-button-state {
+  -webkit-transition: opacity .218s;
+  transition: opacity .218s;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.gsi-material-button:disabled {
+  cursor: default;
+  background-color: #ffffff61;
+}
+
+.gsi-material-button:disabled .gsi-material-button-state {
+  background-color: #1f1f1f1f;
+}
+
+.gsi-material-button:disabled .gsi-material-button-contents {
+  opacity: 38%;
+}
+
+.gsi-material-button:disabled .gsi-material-button-icon {
+  opacity: 38%;
+}
+
+.gsi-material-button:not(:disabled):active .gsi-material-button-state,
+.gsi-material-button:not(:disabled):focus .gsi-material-button-state {
+  background-color: #001d35;
+  opacity: 12%;
+}
+
+.gsi-material-button:not(:disabled):hover {
+  -webkit-box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
+}
+
+.gsi-material-button:not(:disabled):hover .gsi-material-button-state {
+  background-color: #001d35;
+  opacity: 8%;
+}
