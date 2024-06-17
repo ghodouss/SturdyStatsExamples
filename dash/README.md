@@ -11,6 +11,8 @@ To install the required packages:
 `pip install -r requirements.txt`
 
 
+## Scripts
+
 ### sunburst.py
 
 Requires: a trained index (supervised or unsupervised).
