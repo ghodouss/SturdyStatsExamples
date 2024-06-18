@@ -1,0 +1,6 @@
+dash[diskcache]
+dash_bootstrap_components
+dash_mantine_components
+pandas
+plotly
+colorcet
