@@ -11,7 +11,7 @@ from typing import Optional, Iterable, Dict
 from requests.models import Response
 
 
-class index:
+class Index:
 
     def __init__(self, API_key: str, name: str):
 
