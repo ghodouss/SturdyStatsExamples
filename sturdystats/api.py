@@ -1,5 +1,6 @@
 import requests
 from time import sleep
+import json
 
 import srsly                           # to decode output
 from more_itertools import chunked     # to batch data for API calls
@@ -11,12 +12,63 @@ from typing import Optional, Iterable, Dict
 from requests.models import Response
 
 
+class Job:
+    def __init__(self, API_key, job_id, poll_seconds = 1):
+        self.API_key = API_key
+        self.job_id = job_id
+        self.poll_seconds = poll_seconds
+        self.base_url = "https://sturdystatistics.com/api/text/v1/job"
+        self.base_url = "http://localhost:8050/api/text/v1/job"
+
+    def _check_status(self, info: Response) -> None:
+        if (200 != info.status_code):
+            print(f"""error code {info.status_code}""")
+            print(info.content.decode("utf-8"))
+        assert(200 == info.status_code)
+
+    def _post(self, url: str, params: Dict) -> Response:
+        payload = {"api_key": self.API_key, **params}
+        res = requests.post(self.base_url + url, json=payload)
+        self._check_status(res)
+        return res
+
+    def _get(self, url: str, params: Dict) -> Response:
+        params = {"api_key": self.API_key, **params}
+        res = requests.get(self.base_url + url , params=params)
+        self._check_status(res)
+        return res
+
+
+    def get_status(self):
+        res = self._get("/"+self.job_id, dict())
+        res = res.json()
+        if "result" in res:
+            res["result"] = json.loads(res["result"])
+        return res
+
+    def _is_running(self):
+        status = self.get_status()
+        return status["status"] not in ["FAILED", "SUCCEEDED"]
+
+
+    def wait(self):
+        while True:
+            if not self._is_running():
+                break
+            sleep(self.poll_seconds)
+        status = self.get_status()
+        if status["status"] == "FAILED":
+            raise Exception(f"Job {self.job_id} failed with the following error: {status['error']}")
+        return status
+
 class Index:
 
+    ## TODO support id based loading as well if already exists
     def __init__(self, API_key: str, name: str):
 
         self.API_key = API_key
         self.base_url = "https://sturdystatistics.com/api/text/v1/index"
+        self.base_url = "http://localhost:8050/api/text/v1/index"
 
         self.name = name
         self.id = None
@@ -30,21 +82,24 @@ class Index:
             print(f"""Found an existing index with id="{self.id}".""")
 
 
-    def _post(self, url: str, params: Dict) -> Response:
-        payload = {"api_key": self.API_key, **params}
-        res = requests.post(self.base_url + url, json=payload)
-        return res
-
-    def _get(self, url: str, params: Dict) -> Response:
-        params = {"api_key": self.API_key, **params}
-        res = requests.get(self.base_url + url , params=params)
-        return res
 
     def _check_status(self, info: Response) -> None:
         if (200 != info.status_code):
             print(f"""error code {info.status_code}""")
             print(info.content.decode("utf-8"))
         assert(200 == info.status_code)
+
+    def _post(self, url: str, params: Dict) -> Response:
+        payload = {"api_key": self.API_key, **params}
+        res = requests.post(self.base_url + url, json=payload)
+        self._check_status(res)
+        return res
+
+    def _get(self, url: str, params: Dict) -> Response:
+        params = {"api_key": self.API_key, **params}
+        res = requests.get(self.base_url + url , params=params)
+        self._check_status(res)
+        return res
 
 
 
@@ -69,10 +124,7 @@ class Index:
         #    }'
 
         info = self._post("", dict(name=index_name))
-        self._check_status(info)
-
         index_id = info.json()["index_id"]
-
         return index_id
 
 
@@ -86,13 +138,11 @@ class Index:
         # https://sturdystatistics.com/api/documentation#tag/apitextv1/operation/listIndicies
 
         info = self._get("", dict())
-        self._check_status(info)
 
         # find matches by name
         matches = [ i for i in info.json() if i["name"] == index_name ]
         if (0 == len(matches)):
             return None
-
         assert(1 == len(matches))
         return matches[0]
 
@@ -103,8 +153,6 @@ class Index:
         # curl -X GET 'https://sturdystatistics.com/api/text/v1/index/{index_id}?api_key=API_KEY'
 
         info = self._get(f"/{index_id}", dict())
-        self._check_status(info)
-
         status = info.json()
         return status
 
@@ -122,34 +170,24 @@ class Index:
 
         if (index_name is None) and (index_id is None):
             raise ValueError("Must provide either an index_name or an index_id.")
-
         if (index_name is not None) and (index_id is not None):
-            raise ValuError("Cannot provide both an index_name and an index_id.")
-
-
+            raise ValueError("Cannot provide both an index_name and an index_id.")
         if index_id is not None:
             # look up by index_id:
             return self._get_status_by_id(index_id)
-
         # look up by name:
         return self._get_status_by_name(index_name)
 
-
-
-    def get_status(self):
+    def get_status(self) -> dict:
         if self.id is not None:
             return self._get_status(index_id=self.id)
         else:
             return self._get_status(index_name=self.name)
 
-
-
-    def commit(self, max_wait_seconds=300):
+    def commit(self, wait: bool = True):
         """
         """
-
         print(f"""committing changes to index "{self.id}"...""", end="")
-
         # Commit changes from the staging index to the permanent index.  Equivalent to:
         #
         # curl -X POST https://sturdystatistics.com/api/text/v1/index/{index_id}/doc/commit \
@@ -157,32 +195,45 @@ class Index:
         #   -d '{
         #      "api_key": "API_KEY",
         #    }'
-
         info = self._post(f"/{self.id}/doc/commit", dict())
-        self._check_status(info)
+        job_id = info.json()["job_id"]
+        job = Job(self.API_key, job_id, 10)
+        if not wait:
+            return job
+        return job.wait()
+
+    def unstage(self, wait: bool = True):
+        """
+        """
+        print(f"""unstaging changes to index "{self.id}"...""", end="")
+        # Commit changes from the staging index to the permanent index.  Equivalent to:
+        #
+        # curl -X POST https://sturdystatistics.com/api/text/v1/index/{index_id}/doc/commit \
+        #   -H "Content-Type: application/json" \
+        #   -d '{
+        #      "api_key": "API_KEY",
+        #    }'
+        info = self._post(f"/{self.id}/doc/unstage", dict())
+        job_id = info.json()["job_id"]
+        job = Job(self.API_key, job_id, 5)
+        if not wait:
+            return job
+        return job.wait()
 
 
-        # poll once per second until status is ready, or until we timeout:
-        n_checks = 0
-        while n_checks < max_wait_seconds:
-            sleep(1)
-            status = self.get_status()
-            n_checks += 1
-
-            if status["state"] != "committing":
-                print("done", end="\n")
-                return status
+    def _upload_batch(self, records: Iterable[Dict], save = "true"):
+        if len(records) > 250:
+            raise RuntimeError(f"""The maximum batch size is 250 documents.""")
+        info = self._post(f"/{self.id}/doc", dict(docs=records, save=save))
+        job_id = info.json()["job_id"]
+        job = Job(self.API_key, job_id, 1)
+        return job.wait()
 
 
-        # we have exceeded the max waiting time
-        print("timeout", end="\n")
-        return None
-
-
-
-    def upload_and_commit(self,
-                          records: Iterable[Dict],
-                          batch_size: int = 200):
+    def upload(self,
+              records: Iterable[Dict],
+              batch_size: int = 200,
+              commit: bool = True):
         """Uploads documents to the index and commit them for
     permanent storage.  Documents are processed by the AI model if the
     index has been trained.
@@ -208,16 +259,13 @@ class Index:
     """
 
         status = self.get_status()
-
         if "untrained" == status["state"]:
             print("Uploading data to UNTRAINED index for training.")
         elif "ready" == status["state"]:
             print("Uploading data to TRAINED index for prediction.")
         else:
             raise RuntimeError(f"""Unknown status "{status['state']}" for index "{self.name}".""")
-
         results = []
-
         # Upload docs to the staging index.  Equivalent to:
         #
         # curl -X POST https://sturdystatistics.com/api/text/v1/index/{index_id}/doc \
@@ -228,23 +276,12 @@ class Index:
         #    }'
 
         print("uploading data to index...")
-        committed = True
         for i, batch in enumerate(chunked(records, batch_size)):
-            committed = False
-            info = self._post(f"/{self.id}/doc", dict(docs=batch))
-            self._check_status(info)
-            results.extend(info.json()["results"])
-            print(f"""    upload batch {1+i:4d}: response {str(info)}""")
-
-            if 0 == ((i+1) % 10):
-                self.commit()
-                committed = True
-
-        if not committed:
-            self.commit()
-
+            info = self._upload_batch(batch)
+            results.extend(info["result"]["results"])
+            print(f"""    upload batch {1+i:4d}""")
+        if commit: self.commit()
         return results
-
 
 
     def train(self, params: Dict, force: Optional[bool] = None):
@@ -278,7 +315,6 @@ class Index:
     """
 
         status = self.get_status()
-
         if ("untrained" != status["state"]) and not force:
             print(f"index {self.name} is already trained.")
             return status
@@ -293,9 +329,9 @@ class Index:
         #    }'
 
         info = self._post(f"/{self.id}/train", params)
-        self._check_status(info)
-
-        return info.json()
+        job_id = info.json()["job_id"]
+        job = Job(self.API_key, job_id, 30)
+        return job.wait()
 
 
 
@@ -330,12 +366,77 @@ class Index:
 
         print("running predictions...")
         for i, batch in enumerate(chunked(records, batch_size)):
-            info = self._post(f"/{self.id}/doc", dict(docs=batch, save="false"))
-            self._check_status(info)
-            results.extend(info.json()['results'])
+            info = self._upload_batch(records, save="false")
+            results.extend(info["result"]['results'])
             print(f"""    upload batch {1+i:4d}: response {str(info)}""")
             print("...done")
 
             # no commit needed since this makes no change to the index
 
         return results
+
+    def query(
+        self,
+        search_query: Optional[str] = None, 
+        topic_id: Optional[int] = None,
+        topic_group_id: Optional[int] = None,
+        filters: str = "",
+        offset: int = 0,
+        limit: int = 20,
+        sort_by: str = "relevance",
+        ascending: bool = False,
+        summarize_by: str = "paragraph",
+    ):
+        params = dict(
+            offset=offset,
+            limit=limit,
+            sort_by=sort_by,
+            ascending=ascending,
+            summarize_by=summarize_by,
+            filters=filters
+        )
+        if search_query is not None:
+            params["query"] = search_query
+        if topic_id is not None:
+            params['topic_ids'] = topic_id
+        if topic_group_id is not None:
+            params["topic_group_id"] = topic_group_id
+
+        res = self._get(f"/{self.id}/doc", params)
+        return res.json()
+
+    def topicDiff(
+        self,
+        q1: str,
+        q2: str = "",
+        limit: int = 20,
+        cutoff: float = 2.0,
+        min_confidence: float = 95,
+    ):
+        params = dict(
+            q1=q1,
+            limit=limit,
+            cutoff=cutoff,
+            min_confidence=min_confidence
+        )
+        if len(q2.strip()) > 0:
+            params["q2"] = q2
+        res = self._get(f"/{self.id}/topic/diff", params)
+        return res.json()
+
+    def listJobs(
+        self,
+        status: str= "RUNNING",
+        job_name: Optional[str] = None 
+    ):
+        assert status in [None, "", "RUNNING", "FAILED", "SUCCEEDED", "PENDING"]
+        assert job_name in [None, "", "trainIndex", "commitIndex", "unstageIndex", "writeDocs"]
+        params = dict(index_id = self.id)
+        if status is not None and status.strip() != "":
+            params["status"] = status
+        if job_name is not None and job_name.strip() != "":
+            params["job_name"] = job_name
+
+        job = Job(self.API_key, "", 1)
+        res = job._get("", params)
+        return res.json()
