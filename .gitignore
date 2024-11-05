@@ -1,0 +1,4 @@
+_quarto.yml
+notebooks/export.py
+notebooks/data/hacker_news*
+notebooks/.quarto
