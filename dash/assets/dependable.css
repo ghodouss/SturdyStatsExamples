@@ -195,6 +195,13 @@ div.citation-network-deep-dive {
     padding: 0px;
 }
 
+#q-live-sunburst {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
 #ds-live-sunburst {
     width: 100%;
     height: 100%;
