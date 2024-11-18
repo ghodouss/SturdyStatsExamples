@@ -1,6 +1,14 @@
+sturdy-stats-sdk
 dash[diskcache]
 dash_bootstrap_components
 dash_mantine_components
 pandas
 plotly
 colorcet
+openai
+glasbey
+spacy
+srsly
+duckdb
+pandas
+numpy
